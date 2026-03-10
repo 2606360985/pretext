@@ -110,6 +110,18 @@ describe('prepare invariants', () => {
     expect(layout(prepared, 200, LINE_HEIGHT)).toEqual({ lineCount: 1, height: LINE_HEIGHT })
   })
 
+  test('keeps narrow no-break spaces as glue content', () => {
+    const prepared = prepareWithSegments('10\u202F000', FONT)
+    expect(prepared.segments).toEqual(['10\u202F000'])
+    expect(prepared.kinds).toEqual(['text'])
+  })
+
+  test('keeps word joiners as glue content', () => {
+    const prepared = prepareWithSegments('foo\u2060bar', FONT)
+    expect(prepared.segments).toEqual(['foo\u2060bar'])
+    expect(prepared.kinds).toEqual(['text'])
+  })
+
   test('treats zero-width spaces as explicit break opportunities', () => {
     const prepared = prepareWithSegments('alpha\u200Bbeta', FONT)
     expect(prepared.segments).toEqual(['alpha', '\u200B', 'beta'])
@@ -117,6 +129,24 @@ describe('prepare invariants', () => {
 
     const alphaWidth = prepared.widths[0]!
     expect(layout(prepared, alphaWidth + 0.1, LINE_HEIGHT).lineCount).toBe(2)
+  })
+
+  test('treats soft hyphens as discretionary break points', () => {
+    const prepared = prepareWithSegments('trans\u00ADatlantic', FONT)
+    expect(prepared.segments).toEqual(['trans', '\u00AD', 'atlantic'])
+    expect(prepared.kinds).toEqual(['text', 'soft-hyphen', 'text'])
+
+    const wide = layoutWithLines(prepared, 200, LINE_HEIGHT)
+    expect(wide.lineCount).toBe(1)
+    expect(wide.lines.map(line => line.text)).toEqual(['transatlantic'])
+
+    const softBreakWidth = Math.max(
+      prepared.widths[0]! + prepared.discretionaryHyphenWidth,
+      prepared.widths[2]!,
+    ) + 0.1
+    const narrow = layoutWithLines(prepared, softBreakWidth, LINE_HEIGHT)
+    expect(narrow.lineCount).toBe(2)
+    expect(narrow.lines.map(line => line.text)).toEqual(['trans-', 'atlantic'])
   })
 
   test('keeps closing punctuation attached to the preceding word', () => {
@@ -205,6 +235,7 @@ describe('prepare invariants', () => {
     expect(rich.widths).toEqual(plain.widths)
     expect(rich.kinds).toEqual(plain.kinds)
     expect(rich.breakableWidths).toEqual(plain.breakableWidths)
+    expect(rich.discretionaryHyphenWidth).toBe(plain.discretionaryHyphenWidth)
     expect(Array.from(rich.segLevels ?? [])).toEqual(Array.from(plain.segLevels ?? []))
   })
 })

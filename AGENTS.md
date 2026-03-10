@@ -27,7 +27,7 @@ Internal notes for contributors and agents. Use `README.md` as the public source
 
 - `prepare()` / `prepareWithSegments()` do horizontal-only work. `layout()` / `layoutWithLines()` take explicit `lineHeight`.
 - `prepare()` is internally split into a text-analysis phase and a measurement phase; keep that seam clear, but keep the public API simple unless requirements force a change.
-- The internal segment model now distinguishes at least four break kinds: normal text, collapsible spaces, non-breaking glue (`NBSP` / `NNBSP` / `WJ`-like runs), and zero-width break opportunities. Do not collapse those back into one boolean unless the model gets richer in a better way.
+- The internal segment model now distinguishes at least five break kinds: normal text, collapsible spaces, non-breaking glue (`NBSP` / `NNBSP` / `WJ`-like runs), zero-width break opportunities, and soft hyphens. Do not collapse those back into one boolean unless the model gets richer in a better way.
 - `layout()` is the resize hot path: no DOM reads, no canvas calls, no string work, and avoid gratuitous allocations.
 - Segment metrics cache is `Map<font, Map<segment, metrics>>`; shared across texts and resettable via `clearCache()`. Width is only one cached fact now; grapheme widths and other segment-derived facts can be populated lazily.
 - Word and grapheme segmenters are hoisted at module scope. Any locale reset should also clear the word cache.
@@ -37,6 +37,7 @@ Internal notes for contributors and agents. Use `README.md` as the public source
 - If `Intl.Segmenter` emits an Arabic punctuation cluster with trailing combining marks (for example `،ٍ`), still treat the whole cluster as left-sticky punctuation during preprocessing. The browser keeps `بكشء،ٍ` together.
 - If `Intl.Segmenter` emits `" " + combining marks` before Arabic text (for example `كل ِّواحدةٍ`), split it into `" "` plus marks-prefix-on-next-word during preprocessing.
 - `NBSP`-style glue should survive `prepare()` as visible content and prevent ordinary word-boundary wrapping; `ZWSP` should survive as a zero-width break opportunity.
+- Soft hyphens should stay invisible when unbroken, but if the engine chooses that break, the broken line should expose a visible trailing hyphen in `layoutWithLines()`.
 - Astral CJK ideographs must still hit the CJK path; do not rely on BMP-only `charCodeAt()` checks there.
 - Non-word, non-space segments are break opportunities, same as words.
 - CJK grapheme splitting plus kinsoku merging keeps prohibited punctuation attached to adjacent graphemes.
@@ -79,7 +80,7 @@ Internal notes for contributors and agents. Use `README.md` as the public source
 - Revisit whitespace normalization only for the remaining NBSP / hard-space edge cases, not ordinary collapsible whitespace
 - Make `src/layout.ts` import-safe in non-DOM runtimes and add an explicit server canvas backend path
 - Decide whether explicit hard line breaks / paragraph-aware layout belong in scope beyond the current `white-space: normal` collapsing model
-- Decide whether automatic hyphenation / soft-hyphen support is in scope for this repo
+- Decide whether automatic hyphenation beyond manual soft-hyphen support is in scope for this repo
 - Decide whether intrinsic sizing / logical width APIs are needed beyond fixed-width height prediction
 - Decide whether bidi rendering strategy work (selection / copy-paste preserving runs) belongs here or stays out of scope
 - Decide whether richer text-engine features like ellipsis, per-character offsets, custom selection, vertical text, or shape wrapping should remain explicitly out of scope

@@ -658,6 +658,42 @@ So this was a real structural keep:
 - lower repeated `prepare()` work overall
 - effectively unchanged resize-hot-path cost
 
+## Soft hyphen support
+
+Once the internal break model grew beyond `isSpace`, the next obvious blind spot was `U+00AD`
+soft hyphen. `NNBSP` and `WJ` already fit the new `glue` bucket, but `soft hyphen` was still just
+ordinary text, which meant:
+- it stayed invisible and unmodeled during prepare
+- it could not become a preferred discretionary break
+- `layoutWithLines()` had no way to expose the visible hyphen on the broken line
+
+We added a dedicated internal break kind for soft hyphens and a small prepared-time constant:
+- `kinds[i] === 'soft-hyphen'`
+- `discretionaryHyphenWidth`
+
+Current behavior:
+- unbroken lines skip the soft-hyphen segment in rendered line text
+- if overflow happens at the following segment and the discretionary hyphen still fits, the engine
+  breaks at the soft hyphen
+- `layoutWithLines()` appends a visible `-` only to the broken line
+- `layout()` remains arithmetic-only; no live measurement moved into the hot path
+
+Permanent invariants now cover:
+- `NNBSP`
+- `WJ`
+- `ZWSP`
+- `SHY`
+
+Browser/corpus verification after adding SHY support stayed stable:
+- Safari accuracy: `7680/7680`
+- Firefox accuracy: `7680/7680`
+- coarse corpora unchanged:
+  - Korean `61/61`
+  - Hindi `61/61`
+  - Arabic `61/61`
+  - Hebrew `61/61`
+  - Thai `59/61`
+
 ## Thai corpus note
 
 Adding a Thai prose corpus (`นิทานเวตาล/เรื่องที่ 1`) exposed a different class than the Arabic/Hebrew work:
