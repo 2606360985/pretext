@@ -14,7 +14,7 @@ Internal notes for contributors and agents. Use `README.md` as the public source
 - `bun run corpus-font-matrix --id=... --samples=5` — sampled cross-font check for one checked-in corpus
 - `bun run gatsby-check` / `:safari` — Gatsby canary diagnostics
 - `bun run gatsby-sweep --start=300 --end=900 --step=10` — fast Gatsby width sweep; add `--diagnose` to rerun mismatching widths through the slow checker
-- `bun run probe-check --text='...' --width=320 --font='20px ...' --dir=rtl --lang=ar` — isolate a single snippet in the real browser
+- `bun run probe-check --text='...' --width=320 --font='20px ...' --dir=rtl --lang=ar --method=range|span` — isolate a single snippet in the real browser and choose the browser-line extraction method explicitly
 
 ### Important files
 
@@ -63,6 +63,7 @@ Internal notes for contributors and agents. Use `README.md` as the public source
 - Khmer anthology (`ប្រជុំរឿងព្រេងខ្មែរ/ភាគទី៧`, stories 1-10) is now a checked-in Southeast Asian stress canary. Keep the explicit zero-width separators from source cleanup; flattening them would destroy the useful break-opportunity signal.
 - A Lao raw-law corpus was tried and rejected. The source text was stored as wrapped print lines, which made it a dirty `white-space: normal` canary. Do not resurrect that path unless the acquisition method changes.
 - Myanmar prose (`စဉ်းလဲသော ဗျိုင်း (ဆရာ)`) is now the cleaner next Southeast Asian canary. It shows modest, consistent underprediction at narrower widths in both Chrome and Safari, so treat it as a real engine frontier rather than corpus noise.
+- The first Myanmar fixes were punctuation-like, not a new break engine: `၊` / `။` / `၍` / `၌` / `၏` now stay attached during preprocessing, which collapsed the major anchor misses. The remaining sampled miss is a phrase-level class, not another obvious punctuation omission.
 - `/corpus`, `corpus-check`, and `corpus-sweep` now accept `font` / `lineHeight` overrides. Use those before inventing a second page or checker when the question is “does this same corpus stay healthy under another font?”
 - The sampled Chrome font matrix stayed exact across the current Korean/Thai/Khmer/Hindi/Arabic/Hebrew corpora. Safari font-matrix automation is slower and noisier, so Chrome is the better first pass and Safari should be treated as follow-up smoke coverage.
 - Mixed app text is now a first-class canary. Use it to catch product-shaped classes like URL/query-string wrapping, emoji ZWJ runs, and mixed-script punctuation before tuning another book corpus.

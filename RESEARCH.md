@@ -820,6 +820,23 @@ Interpretation:
 - the first mismatch at `300px` is the same broad shape we saw in Lao: the browser breaks earlier than our model at an ordinary Southeast Asian break opportunity, even though the measured candidate line still fits numerically
 - that keeps the pressure on the same abstraction boundary: `Intl.Segmenter('word')` is a useful candidate-boundary source, but it is not the browser's full line-break model for these scripts
 
+Further work on the Myanmar canary turned up two concrete keepers:
+- Myanmar punctuation/signs that should not start a new line need to stay attached during preprocessing, just like Arabic comma/semicolon and Devanagari danda
+- adding `၊` / `။` / `၍` / `၌` / `၏` to the left-sticky set collapsed the Myanmar anchors from:
+  - `300`: `-96px` -> `0px`
+  - `600`: `-32px` -> `0px`
+  - `800`: exact throughout
+- the sampled sweep improved to `8/9 exact`, with only one remaining one-line miss at `525px`
+
+The remaining Myanmar miss does **not** look like another punctuation omission. The current sampled holdout is a phrase-level case around:
+- `ထို့ကြောင့် ကျွန်ုပ်၏|လက်မဖြင့်`
+
+That looks more like a richer phrase-sticking class than punctuation-at-line-start, so it should be treated cautiously rather than folded into the punctuation heuristics immediately.
+
+We also hardened the single-snippet probe tooling:
+- `/probe` and `bun run probe-check` now accept `method=range|span`
+- for the tested Myanmar snippet, the local line-break mismatch reproduced under both methods, which ruled out a `Range`-vs-`span` extraction artifact
+
 ## Sampled cross-font corpus matrix
 
 The first font-axis pass was lighter-weight on purpose: keep the same corpora and widths, but swap only

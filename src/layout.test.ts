@@ -194,6 +194,12 @@ describe('prepare invariants', () => {
     expect(prepared.segments).toEqual(['नमस्ते।', ' ', 'दुनिया॥'])
   })
 
+  test('keeps myanmar punctuation attached to the preceding word', () => {
+    const prepared = prepareWithSegments('ဖြစ်သည်။ နောက်တစ်ခု၊ ကိုက်ချီ၍ ယုံကြည်မိကြ၏။', FONT)
+    expect(prepared.segments.slice(0, 7)).toEqual(['ဖြစ်သည်။', ' ', 'နောက်တစ်ခု၊', ' ', 'ကိုက်', 'ချီ၍', ' '])
+    expect(prepared.segments.at(-1)).toBe('ကြ၏။')
+  })
+
   test('keeps opening quotes attached to the following word', () => {
     const prepared = prepareWithSegments('“Whenever', FONT)
     expect(prepared.segments).toEqual(['“Whenever'])

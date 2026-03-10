@@ -46,6 +46,7 @@ type ProbeReport = {
   font?: string
   lineHeight?: number
   direction?: string
+  browserLineMethod?: 'range' | 'span'
   predictedHeight?: number
   actualHeight?: number
   diffPx?: number
@@ -71,6 +72,7 @@ const font = params.get('font') ?? '18px serif'
 const lineHeight = Math.max(1, Number.parseInt(params.get('lineHeight') ?? '32', 10))
 const direction = params.get('dir') === 'rtl' ? 'rtl' : 'ltr'
 const lang = params.get('lang') ?? (direction === 'rtl' ? 'ar' : 'en')
+const browserLineMethod = params.get('method') === 'span' ? 'span' : 'range'
 
 const stats = document.getElementById('stats')!
 const book = document.getElementById('book')!
@@ -185,6 +187,69 @@ function getDiagnosticUnits(prepared: PreparedTextWithSegments): Array<{ text: s
 }
 
 function getBrowserLines(prepared: PreparedTextWithSegments, measuredFont: string, dir: string): ProbeLine[] {
+  return browserLineMethod === 'span'
+    ? getBrowserLinesFromSpans(prepared, measuredFont, dir)
+    : getBrowserLinesFromRange(prepared, measuredFont, dir)
+}
+
+function getBrowserLinesFromSpans(prepared: PreparedTextWithSegments, measuredFont: string, dir: string): ProbeLine[] {
+  const lines: ProbeLine[] = []
+  const units = getDiagnosticUnits(prepared)
+  const spans: HTMLSpanElement[] = []
+  let currentLine = ''
+  let currentStart: number | null = null
+  let currentEnd = 0
+  let lastTop: number | null = null
+
+  diagnosticDiv.textContent = ''
+  for (const unit of units) {
+    const span = document.createElement('span')
+    span.textContent = unit.text
+    diagnosticDiv.appendChild(span)
+    spans.push(span)
+  }
+
+  function pushLine(): void {
+    if (currentStart === null || currentLine.length === 0) return
+    const content = getLineContent(currentLine, currentEnd)
+    lines.push({
+      text: currentLine,
+      renderedText: currentLine,
+      contentText: content.text,
+      start: currentStart,
+      end: currentEnd,
+      contentEnd: content.end,
+      fullWidth: measureCanvasText(content.text, measuredFont),
+      domWidth: measureDomText(content.text, measuredFont, dir),
+    })
+  }
+
+  for (let i = 0; i < units.length; i++) {
+    const unit = units[i]!
+    const span = spans[i]!
+    const rect = span.getBoundingClientRect()
+    const top: number | null = rect.width > 0 || rect.height > 0 ? rect.top : lastTop
+
+    if (top !== null && lastTop !== null && top > lastTop + 0.5) {
+      pushLine()
+      currentLine = unit.text
+      currentStart = unit.start
+      currentEnd = unit.end
+    } else {
+      if (currentStart === null) currentStart = unit.start
+      currentLine += unit.text
+      currentEnd = unit.end
+    }
+
+    if (top !== null) lastTop = top
+  }
+
+  pushLine()
+  diagnosticDiv.textContent = text
+  return lines
+}
+
+function getBrowserLinesFromRange(prepared: PreparedTextWithSegments, measuredFont: string, dir: string): ProbeLine[] {
   const textNode = diagnosticDiv.firstChild
   const lines: ProbeLine[] = []
   if (!(textNode instanceof Text)) return lines
@@ -492,6 +557,7 @@ function init(): void {
       font,
       lineHeight,
       direction,
+      browserLineMethod,
       predictedHeight: predicted.height + PADDING * 2,
       actualHeight,
       diffPx: predicted.height + PADDING * 2 - actualHeight,

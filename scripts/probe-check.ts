@@ -9,6 +9,7 @@ import {
 type ProbeReport = {
   status: 'ready' | 'error'
   requestId?: string
+  browserLineMethod?: 'range' | 'span'
   width?: number
   predictedHeight?: number
   actualHeight?: number
@@ -75,6 +76,9 @@ function printReport(report: ProbeReport): void {
   console.log(
     `width ${report.width}: diff ${report.diffPx}px | lines ${report.predictedLineCount}/${report.browserLineCount} | height ${report.predictedHeight}/${report.actualHeight}`,
   )
+  if (report.browserLineMethod !== undefined) {
+    console.log(`  browser line method: ${report.browserLineMethod}`)
+  }
   if (report.firstBreakMismatch !== null && report.firstBreakMismatch !== undefined) {
     const mismatch = report.firstBreakMismatch
     console.log(`  break L${mismatch.line}: ${mismatch.reasonGuess}`)
@@ -100,6 +104,7 @@ const font = parseStringFlag('font') ?? '18px serif'
 const lineHeight = parseNumberFlag('lineHeight', 32)
 const dir = parseStringFlag('dir') ?? 'ltr'
 const lang = parseStringFlag('lang') ?? (dir === 'rtl' ? 'ar' : 'en')
+const method = parseStringFlag('method')
 
 let serverProcess: ChildProcess | null = null
 const session = createBrowserSession(browser)
@@ -115,6 +120,7 @@ try {
     `&lineHeight=${lineHeight}` +
     `&dir=${encodeURIComponent(dir)}` +
     `&lang=${encodeURIComponent(lang)}` +
+    (method === null ? '' : `&method=${encodeURIComponent(method)}`) +
     `&requestId=${encodeURIComponent(requestId)}`
   const report = await loadHashReport<ProbeReport>(session, url, requestId, browser)
   printReport(report)
