@@ -11,6 +11,7 @@ import myCunningHeronTeacher from '../corpora/my-cunning-heron-teacher.txt' with
 import koUnsuJohEunNal from '../corpora/ko-unsu-joh-eun-nal.txt' with { type: 'text' }
 import thNithanVetalStory1 from '../corpora/th-nithan-vetal-story-1.txt' with { type: 'text' }
 import urChughd from '../corpora/ur-chughd.txt' with { type: 'text' }
+import zhZhufu from '../corpora/zh-zhufu.txt' with { type: 'text' }
 
 const COUNT = 500
 const FONT_FAMILY = '"Helvetica Neue", Helvetica, Arial, sans-serif'
@@ -84,6 +85,15 @@ const CORPORA = [
     text: koUnsuJohEunNal,
     font: '18px "Apple SD Gothic Neo", "Malgun Gothic", "Noto Sans CJK KR", sans-serif',
     lineHeight: 30,
+    width: 300,
+    sampleWidths: [240, 300, 360] as const,
+  },
+  {
+    id: 'zh-zhufu',
+    label: 'Chinese prose',
+    text: zhZhufu,
+    font: '20px "Songti SC", "PingFang SC", "Noto Serif CJK SC", serif',
+    lineHeight: 32,
     width: 300,
     sampleWidths: [240, 300, 360] as const,
   },

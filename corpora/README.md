@@ -31,6 +31,12 @@ Current bundle:
   - URL: <https://ko.wikisource.org/wiki/%EC%9A%B4%EC%88%98_%EC%A2%8B%EC%9D%80_%EB%82%A0>
   - Acquisition: Wikisource `extracts` API, lightly cleaned
 
+- `zh-zhufu.txt`
+  - Language: Chinese
+  - Source: 魯迅, `祝福`
+  - URL: <https://zh.wikisource.org/zh-hant/%E7%A5%9D%E7%A6%8F>
+  - Acquisition: Wikisource raw text, trimmed to the story body after removing the header template
+
 - `th-nithan-vetal-story-1.txt`
   - Language: Thai
   - Source: `นิทานเวตาล/เรื่องที่ 1`

@@ -115,6 +115,20 @@ const FONT_MATRIX: Record<string, FontVariant[]> = {
       lineHeight: 30,
     },
   ],
+  'zh-zhufu': [
+    {
+      id: 'default',
+      label: 'Songti SC',
+      font: '20px "Songti SC", "PingFang SC", "Noto Serif CJK SC", serif',
+      lineHeight: 32,
+    },
+    {
+      id: 'pingfang-sc',
+      label: 'PingFang SC',
+      font: '20px "PingFang SC", "Songti SC", sans-serif',
+      lineHeight: 32,
+    },
+  ],
   'th-nithan-vetal-story-1': [
     {
       id: 'default',

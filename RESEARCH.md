@@ -11,6 +11,7 @@ For the shared mismatch vocabulary, see `corpora/TAXONOMY.md`.
 This log is historical. The current practical steering picture is:
 
 - Japanese now has two real canaries (`羅生門`, `蜘蛛の糸`), both clean at anchor widths and both still exposing a small positive one-line field on broader Chrome sweeps.
+- Chinese now has a real long-form canary (`祝福`) that is exact at Safari anchors and at Chrome `600 / 800`, but keeps a broader positive one-line field in Chrome at narrower widths.
 - Myanmar still has two real canaries with residual Chrome/Safari disagreement around quote/follower-style classes, so it remains the main unresolved Southeast Asian frontier.
 - Urdu now has a real Nastaliq/Naskh canary (`چغد`) with the same narrow-width negative field in Chrome and Safari, so it is clearly measuring a shaping/context class rather than dirty data or a browser-only quirk.
 - Arabic coarse corpora are clean; the remaining work there is mostly a fine-width edge-fit class, not the old preprocessing/corpus-hygiene problems.
@@ -937,6 +938,23 @@ Interpretation:
 - current Japanese misses are a real context-width class, not dirty data
 - they are good evidence for the exactness ceiling of a width-independent grapheme-sum model in proportional Japanese fonts
 - that makes Japanese a good stop signal: document the class, keep the canary, and do not paper it over with another narrow punctuation heuristic unless a broader fix emerges
+
+We then broadened the CJK class with a Chinese prose canary from 魯迅’s `祝福`.
+
+What it taught us:
+- the source itself was clean after a simple raw-text trim; this was not another Lao-style dirty corpus
+- Safari anchors (`300 / 600 / 800`) were exact immediately
+- Chrome anchors were exact at `600 / 800`, but `300px` was a one-line positive miss (`+32px`)
+- the sampled Chrome sweep was `7/9 exact`, and Chrome `step=10` landed at `44/61 exact`
+
+Font signal:
+- `Songti SC` was `3/5 exact` on the sampled matrix (`+32px` at `300 / 450`)
+- `PingFang SC` widened the same positive field to `300 / 450 / 600`
+
+Interpretation:
+- Chinese is a real canary, not a failure of corpus hygiene
+- unlike the Japanese field, the first useful signal here is font sensitivity more than a single recurring punctuation pattern
+- this makes Chinese a good reminder that “CJK is healthy” was too broad a conclusion from Japanese/Korean alone
 
 ## Sampled cross-font corpus matrix
 

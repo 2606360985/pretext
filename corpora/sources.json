@@ -72,6 +72,24 @@
     "notes": "Starter long-form stress corpus from Wikisource."
   },
   {
+    "id": "zh-zhufu",
+    "language": "zh",
+    "direction": "ltr",
+    "title": "祝福",
+    "source_url": "https://zh.wikisource.org/zh-hant/%E7%A5%9D%E7%A6%8F",
+    "output": "corpora/zh-zhufu.txt",
+    "font_family": "\"Songti SC\", \"PingFang SC\", \"Noto Serif CJK SC\", serif",
+    "font_size_px": 20,
+    "line_height_px": 32,
+    "default_width": 600,
+    "min_width": 300,
+    "max_width": 900,
+    "characters": 9427,
+    "lines": 220,
+    "acquired_via": "raw-trim",
+    "notes": "Chinese prose stress corpus from Wikisource raw text, trimmed to the story body after removing the header template."
+  },
+  {
     "id": "th-nithan-vetal-story-1",
     "language": "th",
     "direction": "ltr",
