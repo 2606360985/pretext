@@ -155,7 +155,6 @@ describe('prepare invariants', () => {
     const wide = layoutWithLines(prepared, 200, LINE_HEIGHT)
     expect(wide.lineCount).toBe(1)
     expect(wide.lines.map(line => line.text)).toEqual(['transatlantic'])
-    expect(wide.lines.map(line => line.trailingDiscretionaryHyphen)).toEqual([false])
 
     const prefixed = prepareWithSegments('foo trans\u00ADatlantic', FONT)
     const softBreakWidth = Math.max(
@@ -165,7 +164,6 @@ describe('prepare invariants', () => {
     const narrow = layoutWithLines(prefixed, softBreakWidth, LINE_HEIGHT)
     expect(narrow.lineCount).toBe(2)
     expect(narrow.lines.map(line => line.text)).toEqual(['foo trans-', 'atlantic'])
-    expect(narrow.lines.map(line => line.trailingDiscretionaryHyphen)).toEqual([true, false])
     expect(layout(prefixed, softBreakWidth, LINE_HEIGHT).lineCount).toBe(narrow.lineCount)
 
     const continuedSoftBreakWidth =
@@ -177,7 +175,6 @@ describe('prepare invariants', () => {
       0.1
     const continued = layoutWithLines(prefixed, continuedSoftBreakWidth, LINE_HEIGHT)
     expect(continued.lines.map(line => line.text)).toEqual(['foo trans-a', 'tlantic'])
-    expect(continued.lines.map(line => line.trailingDiscretionaryHyphen)).toEqual([true, false])
     expect(layout(prefixed, continuedSoftBreakWidth, LINE_HEIGHT).lineCount).toBe(continued.lineCount)
   })
 
@@ -270,6 +267,11 @@ describe('prepare invariants', () => {
     expect(prepared.segments).toEqual(['window', ' ', '7:00-', '9:00', ' ', 'only'])
   })
 
+  test('splits hyphenated numeric identifiers at preferred boundaries', () => {
+    const prepared = prepareWithSegments('SSN 420-69-8008 filed', FONT)
+    expect(prepared.segments).toEqual(['SSN', ' ', '420-', '69-', '8008', ' ', 'filed'])
+  })
+
   test('keeps unicode-digit numeric expressions together', () => {
     const prepared = prepareWithSegments('यह २४×७ सपोर्ट है', FONT)
     expect(prepared.segments).toEqual(['यह', ' ', '२४×७', ' ', 'सपोर्ट', ' ', 'है'])
@@ -354,7 +356,6 @@ describe('layout invariants', () => {
       width: widthOfHello,
       start: { segmentIndex: 0, graphemeIndex: 0 },
       end: { segmentIndex: 1, graphemeIndex: 0 },
-      trailingDiscretionaryHyphen: false,
     }])
   })
 
@@ -408,7 +409,6 @@ describe('layout invariants', () => {
       width: number
       start: { segmentIndex: number, graphemeIndex: number }
       end: { segmentIndex: number, graphemeIndex: number }
-      trailingDiscretionaryHyphen: boolean
     }> = []
 
     const lineCount = walkLineRanges(prepared, width, line => {
@@ -416,7 +416,6 @@ describe('layout invariants', () => {
         width: line.width,
         start: { ...line.start },
         end: { ...line.end },
-        trailingDiscretionaryHyphen: line.trailingDiscretionaryHyphen,
       })
     })
 
@@ -425,7 +424,6 @@ describe('layout invariants', () => {
       width: line.width,
       start: line.start,
       end: line.end,
-      trailingDiscretionaryHyphen: line.trailingDiscretionaryHyphen,
     })))
   })
 

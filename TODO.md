@@ -12,7 +12,7 @@ What is already done:
 - Internal break kinds are richer than a single `isSpace` boolean.
 - Segment metrics cache is richer than width-only.
 - `setLocale(locale?)` exists and resets the shared analysis state for future `prepare()` calls.
-- `layoutWithLines()` now exposes boundary cursors and `trailingDiscretionaryHyphen`.
+- `layoutWithLines()` now exposes boundary cursors.
 - `layoutNextLine()` now exists on the rich path for variable-width, per-row userland layout.
 - `pages/demos/dynamic-layout.html` / `pages/demos/dynamic-layout.ts` are now the main rich editorial demo: fixed-height spread, continuous two-column flow, obstacle-aware title routing, live logo-driven reflow, and line-level hover tooling.
 - `pages/demos/bubbles.html` / `pages/demos/bubbles.ts` keep the shrinkwrap / `walkLineRanges()` story honest.

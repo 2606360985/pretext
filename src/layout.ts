@@ -111,14 +111,12 @@ export type LayoutLine = {
   width: number // Measured width of this line, e.g. 87.5
   start: LayoutCursor // Inclusive start cursor in prepared segments/graphemes
   end: LayoutCursor // Exclusive end cursor in prepared segments/graphemes
-  trailingDiscretionaryHyphen: boolean // True when a visible trailing hyphen was inserted from a soft hyphen break
 }
 
 export type LayoutLineRange = {
   width: number // Measured width of this line, e.g. 87.5
   start: LayoutCursor // Inclusive start cursor in prepared segments/graphemes
   end: LayoutCursor // Exclusive end cursor in prepared segments/graphemes
-  trailingDiscretionaryHyphen: boolean // True when a visible trailing hyphen was inserted from a soft hyphen break
 }
 
 export type LayoutLinesResult = LayoutResult & {
@@ -419,7 +417,6 @@ function materializeLayoutLine(
       segmentIndex: line.endSegmentIndex,
       graphemeIndex: line.endGraphemeIndex,
     },
-    trailingDiscretionaryHyphen: line.discretionaryHyphenBeforeSegmentIndex >= 0,
   }
 }
 
@@ -434,7 +431,6 @@ function toLayoutLineRange(line: InternalLayoutLine): LayoutLineRange {
       segmentIndex: line.endSegmentIndex,
       graphemeIndex: line.endGraphemeIndex,
     },
-    trailingDiscretionaryHyphen: line.discretionaryHyphenBeforeSegmentIndex >= 0,
   }
 }
 

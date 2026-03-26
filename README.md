@@ -95,13 +95,11 @@ type LayoutLine = {
   width: number // Measured width of this line, e.g. 87.5
   start: LayoutCursor // Inclusive start cursor in prepared segments/graphemes
   end: LayoutCursor // Exclusive end cursor in prepared segments/graphemes
-  trailingDiscretionaryHyphen: boolean // True when a visible trailing hyphen was inserted from a soft hyphen break
 }
 type LayoutLineRange = {
   width: number // Measured width of this line, e.g. 87.5
   start: LayoutCursor // Inclusive start cursor in prepared segments/graphemes
   end: LayoutCursor // Exclusive end cursor in prepared segments/graphemes
-  trailingDiscretionaryHyphen: boolean // True when a visible trailing hyphen was inserted from a soft hyphen break
 }
 type LayoutCursor = {
   segmentIndex: number // Segment index in prepareWithSegments' prepared rich segment stream
@@ -121,7 +119,8 @@ Pretext doesn't try to be a full font rendering engine (yet?). It currently targ
 - `white-space: normal`
 - `word-break: normal`
 - `overflow-wrap: break-word`
-- `system-ui` is unsafe for `layout()` accuracy on macOS. Use a named font
+- `line-break: auto`
+- `system-ui` is unsafe for `layout()` accuracy on macOS. Use a named font.
 - Because the default target includes `overflow-wrap: break-word`, very narrow widths can still break inside words, but only at grapheme boundaries.
 
 ## Develop

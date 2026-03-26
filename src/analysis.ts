@@ -520,7 +520,7 @@ function mergeNumericRuns(segmentation: MergedSegmentation): MergedSegmentation 
   }
 }
 
-function splitTimeRangeRuns(segmentation: MergedSegmentation): MergedSegmentation {
+function splitHyphenatedNumericRuns(segmentation: MergedSegmentation): MergedSegmentation {
   const texts: string[] = []
   const isWordLike: boolean[] = []
   const kinds: SegmentBreakKind[] = []
@@ -528,23 +528,34 @@ function splitTimeRangeRuns(segmentation: MergedSegmentation): MergedSegmentatio
 
   for (let i = 0; i < segmentation.len; i++) {
     const text = segmentation.texts[i]!
-    const match = text.match(/^(\p{Nd}[\p{Nd}:]*-)(\p{Nd}[\p{Nd}:]*)$/u)
-    if (
-      segmentation.kinds[i] === 'text' &&
-      match !== null &&
-      match[1]!.includes(':') &&
-      match[2]!.includes(':')
-    ) {
-      texts.push(match[1]!)
-      isWordLike.push(true)
-      kinds.push('text')
-      starts.push(segmentation.starts[i]!)
+    if (segmentation.kinds[i] === 'text' && text.includes('-')) {
+      const parts = text.split('-')
+      let shouldSplit = parts.length > 1
+      for (let j = 0; j < parts.length; j++) {
+        const part = parts[j]!
+        if (!shouldSplit) break
+        if (
+          part.length === 0 ||
+          !segmentContainsDecimalDigit(part) ||
+          !isNumericRunSegment(part)
+        ) {
+          shouldSplit = false
+        }
+      }
 
-      texts.push(match[2]!)
-      isWordLike.push(true)
-      kinds.push('text')
-      starts.push(segmentation.starts[i]! + match[1]!.length)
-      continue
+      if (shouldSplit) {
+        let offset = 0
+        for (let j = 0; j < parts.length; j++) {
+          const part = parts[j]!
+          const splitText = j < parts.length - 1 ? `${part}-` : part
+          texts.push(splitText)
+          isWordLike.push(true)
+          kinds.push('text')
+          starts.push(segmentation.starts[i]! + offset)
+          offset += splitText.length
+        }
+        continue
+      }
     }
 
     texts.push(text)
@@ -796,7 +807,7 @@ function buildMergedSegmentation(normalized: string, profile: AnalysisProfile): 
     starts: mergedStarts,
   })
   const withMergedUrls = carryTrailingForwardStickyAcrossCJKBoundary(
-    splitTimeRangeRuns(mergeNumericRuns(mergeUrlQueryRuns(mergeUrlLikeRuns(compacted)))),
+    splitHyphenatedNumericRuns(mergeNumericRuns(mergeUrlQueryRuns(mergeUrlLikeRuns(compacted)))),
   )
 
   for (let i = 0; i < withMergedUrls.len - 1; i++) {

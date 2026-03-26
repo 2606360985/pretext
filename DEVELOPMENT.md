@@ -28,7 +28,7 @@ See [RESEARCH.md](RESEARCH.md) for the full exploration log: every approach we t
 
 See:
 - [STATUS.md](STATUS.md) for the current compact benchmark snapshot
-- [pages/benchmark-results.txt](pages/benchmark-results.txt) for the older checked-in cross-browser raw snapshot
+- [benchmarks/chrome.json](benchmarks/chrome.json) and [benchmarks/safari.json](benchmarks/safari.json) for the checked-in current benchmark snapshots
 - [pages/benchmark.ts](pages/benchmark.ts) for the live benchmark harness
 
 ## Accuracy
@@ -55,7 +55,7 @@ Tested across 4 fonts (Helvetica Neue, Georgia, Verdana, Courier New) × 8 sizes
 - **CSS config**: targets a common app-text configuration (`white-space: normal`, `word-break: normal`, `overflow-wrap: break-word`, `line-break: auto`). Source newlines are treated as collapsible whitespace, not explicit `<br>`/paragraph breaks. Other configurations (`break-all`, `keep-all`, `strict`, `loose`, `anywhere`) are untested.
 - **In-word breaks**: because the default target includes `overflow-wrap: break-word`, very narrow widths may break inside words, but only at grapheme boundaries. The engine will not cut through raw UTF-16/code-unit boundaries or split an emoji cluster in half.
 - **`line-height`**: the library does not infer CSS line height. Pass the exact value you render with into `layout()` / `layoutWithLines()`. `line-height: normal` differs across fonts and browsers.
-- **Soft hyphens**: unbroken soft hyphens stay invisible, but if the engine chooses that break, the rich APIs expose a visible trailing `-`. `LayoutLine.trailingDiscretionaryHyphen` tells you when that hyphen was inserted by layout rather than coming from source text.
+- **Soft hyphens**: unbroken soft hyphens stay invisible, but if the engine chooses that break, the rich APIs expose a visible trailing `-` in the rendered line text.
 - **`system-ui` font**: canvas and DOM resolve this CSS keyword to different font variants at certain sizes on macOS. Use a named font (Inter, Helvetica, Arial, etc.) for guaranteed accuracy. See [RESEARCH.md](RESEARCH.md#discovery-system-ui-font-resolution-mismatch).
 - **Server-side**: importing the module is now safe in non-DOM runtimes, but actual server-side measurement is still not zero-config. Calling `prepare()` without `OffscreenCanvas` or a DOM canvas path will still need an explicit canvas-backed backend. We keep a HarfBuzz (WASM) backend around for headless probes and research.
 

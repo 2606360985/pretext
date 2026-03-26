@@ -1,0 +1,156 @@
+{
+  "capturedAt": "2026-03-26",
+  "browser": "chrome",
+  "topLevel": {
+    "Our library: prepare()": 17.95,
+    "Our library: layout()": 0.11,
+    "DOM batch": 5.3,
+    "DOM interleaved": 56.25
+  },
+  "corpora": [
+    {
+      "id": "ja-kumo-no-ito",
+      "label": "Japanese prose (story 2)",
+      "analysisMs": 5.7,
+      "measureMs": 8.4,
+      "prepareMs": 14,
+      "layoutMs": 0.03,
+      "analysisSegments": 1773,
+      "segments": 2667,
+      "lineCount": 193,
+      "width": 300
+    },
+    {
+      "id": "ja-rashomon",
+      "label": "Japanese prose",
+      "analysisMs": 4.4,
+      "measureMs": 10.3,
+      "prepareMs": 15.7,
+      "layoutMs": 0.04,
+      "analysisSegments": 3606,
+      "segments": 5044,
+      "lineCount": 380,
+      "width": 300
+    },
+    {
+      "id": "ko-unsu-joh-eun-nal",
+      "label": "Korean prose",
+      "analysisMs": 2.8,
+      "measureMs": 10.5,
+      "prepareMs": 13.9,
+      "layoutMs": 0.06,
+      "analysisSegments": 5282,
+      "segments": 9679,
+      "lineCount": 428,
+      "width": 300
+    },
+    {
+      "id": "zh-zhufu",
+      "label": "Chinese prose",
+      "analysisMs": 9.8,
+      "measureMs": 19.2,
+      "prepareMs": 27.5,
+      "layoutMs": 0.07,
+      "analysisSegments": 5433,
+      "segments": 7949,
+      "lineCount": 626,
+      "width": 300
+    },
+    {
+      "id": "zh-guxiang",
+      "label": "Chinese prose (story 2)",
+      "analysisMs": 4.2,
+      "measureMs": 11.7,
+      "prepareMs": 17.3,
+      "layoutMs": 0.04,
+      "analysisSegments": 3271,
+      "segments": 4745,
+      "lineCount": 375,
+      "width": 300
+    },
+    {
+      "id": "th-nithan-vetal-story-1",
+      "label": "Thai prose",
+      "analysisMs": 14.8,
+      "measureMs": 9.9,
+      "prepareMs": 26.8,
+      "layoutMs": 0.06,
+      "analysisSegments": 10281,
+      "segments": 10281,
+      "lineCount": 1024,
+      "width": 300
+    },
+    {
+      "id": "my-cunning-heron-teacher",
+      "label": "Myanmar prose",
+      "analysisMs": 0.7,
+      "measureMs": 1,
+      "prepareMs": 1.7,
+      "layoutMs": 0.01,
+      "analysisSegments": 797,
+      "segments": 797,
+      "lineCount": 81,
+      "width": 300
+    },
+    {
+      "id": "my-bad-deeds-return-to-you-teacher",
+      "label": "Myanmar prose (story 2)",
+      "analysisMs": 0.4,
+      "measureMs": 0.9,
+      "prepareMs": 1.3,
+      "layoutMs": 0,
+      "analysisSegments": 498,
+      "segments": 498,
+      "lineCount": 54,
+      "width": 300
+    },
+    {
+      "id": "ur-chughd",
+      "label": "Urdu prose",
+      "analysisMs": 2.7,
+      "measureMs": 4.7,
+      "prepareMs": 7.4,
+      "layoutMs": 0.03,
+      "analysisSegments": 6051,
+      "segments": 6051,
+      "lineCount": 351,
+      "width": 300
+    },
+    {
+      "id": "km-prachum-reuang-preng-khmer-volume-7-stories-1-10",
+      "label": "Khmer prose",
+      "analysisMs": 6.2,
+      "measureMs": 5.6,
+      "prepareMs": 11.8,
+      "layoutMs": 0.06,
+      "analysisSegments": 11109,
+      "segments": 11109,
+      "lineCount": 591,
+      "width": 300
+    },
+    {
+      "id": "hi-eidgah",
+      "label": "Hindi prose",
+      "analysisMs": 4.3,
+      "measureMs": 8.5,
+      "prepareMs": 13.8,
+      "layoutMs": 0.05,
+      "analysisSegments": 9958,
+      "segments": 9958,
+      "lineCount": 653,
+      "width": 300
+    },
+    {
+      "id": "ar-risalat-al-ghufran-part-1",
+      "label": "Arabic prose",
+      "analysisMs": 49.5,
+      "measureMs": 46.5,
+      "prepareMs": 97.5,
+      "layoutMs": 0.21,
+      "analysisSegments": 37603,
+      "segments": 37603,
+      "lineCount": 2643,
+      "width": 300
+    }
+  ]
+}
