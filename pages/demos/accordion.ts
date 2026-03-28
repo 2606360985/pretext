@@ -11,6 +11,7 @@ type AccordionItemDom = {
   toggle: HTMLButtonElement
   title: HTMLSpanElement
   meta: HTMLSpanElement
+  glyph: HTMLSpanElement
   body: HTMLDivElement
   inner: HTMLDivElement
   copy: HTMLParagraphElement
@@ -18,6 +19,9 @@ type AccordionItemDom = {
 
 type State = {
   openItemId: string | null
+  events: {
+    clickedItemId: string | null
+  }
 }
 
 type DomCache = {
@@ -54,6 +58,9 @@ const items: AccordionItem[] = [
 
 const st: State = {
   openItemId: 'shipping',
+  events: {
+    clickedItemId: null,
+  },
 }
 
 let domCache: DomCache | null = null
@@ -92,12 +99,13 @@ function getAccordionItemNodes(list: HTMLElement): AccordionItemDom[] {
   if (roots.length !== items.length) throw new Error('accordion item count mismatch')
 
   return roots.map(root => ({
-      root,
-      toggle: getRequiredChild(root, '.accordion-toggle', HTMLButtonElement),
-      title: getRequiredChild(root, '.accordion-title', HTMLSpanElement),
-      meta: getRequiredChild(root, '.accordion-meta', HTMLSpanElement),
-      body: getRequiredChild(root, '.accordion-body', HTMLDivElement),
-      inner: getRequiredChild(root, '.accordion-inner', HTMLDivElement),
+    root,
+    toggle: getRequiredChild(root, '.accordion-toggle', HTMLButtonElement),
+    title: getRequiredChild(root, '.accordion-title', HTMLSpanElement),
+    meta: getRequiredChild(root, '.accordion-meta', HTMLSpanElement),
+    glyph: getRequiredChild(root, '.accordion-glyph', HTMLSpanElement),
+    body: getRequiredChild(root, '.accordion-body', HTMLDivElement),
+    inner: getRequiredChild(root, '.accordion-inner', HTMLDivElement),
     copy: getRequiredChild(root, '.accordion-copy', HTMLParagraphElement),
   }))
 }
@@ -134,9 +142,9 @@ function refreshPrepared(font: string): void {
 function scheduleRender(): void {
   if (domCache === null) return
   if (scheduledRaf !== null) return
-  scheduledRaf = requestAnimationFrame(() => {
+  scheduledRaf = requestAnimationFrame(function renderAccordionFrame(now) {
     scheduledRaf = null
-    render()
+    if (render(now)) scheduleRender()
   })
 }
 
@@ -158,7 +166,7 @@ function boot(): void {
     const id = toggle.dataset['id']
     if (id === undefined) return
 
-    st.openItemId = st.openItemId === id ? null : id
+    st.events.clickedItemId = id
     scheduleRender()
   })
 
@@ -173,11 +181,11 @@ function boot(): void {
   scheduleRender()
 }
 
-function render(): void {
-  if (domCache === null) return
+function render(_now: number): boolean {
+  if (domCache === null) return false
   const firstCopy = domCache.items[0]?.copy
   const firstInner = domCache.items[0]?.inner
-  if (firstCopy === undefined || firstInner === undefined) return
+  if (firstCopy === undefined || firstInner === undefined) return false
 
   const copyStyles = getComputedStyle(firstCopy)
   const innerStyles = getComputedStyle(firstInner)
@@ -185,6 +193,11 @@ function render(): void {
   const lineHeight = parsePx(copyStyles.lineHeight)
   const contentWidth = firstCopy.getBoundingClientRect().width
   const paddingY = parsePx(innerStyles.paddingTop) + parsePx(innerStyles.paddingBottom)
+
+  let openItemId = st.openItemId
+  if (st.events.clickedItemId !== null) {
+    openItemId = openItemId === st.events.clickedItemId ? null : st.events.clickedItemId
+  }
 
   refreshPrepared(font)
 
@@ -196,14 +209,19 @@ function render(): void {
     panelMeta.push(`Measurement: ${metrics.lineCount} lines · ${Math.round(metrics.height)}px`)
   }
 
+  st.openItemId = openItemId
+  st.events.clickedItemId = null
+
   for (let index = 0; index < items.length; index++) {
     const item = items[index]!
     const itemDom = domCache.items[index]!
-    const expanded = st.openItemId === item.id
+    const expanded = openItemId === item.id
 
     itemDom.meta.textContent = panelMeta[index]!
     itemDom.body.style.height = expanded ? `${panelHeights[index]}px` : '0px'
+    itemDom.glyph.style.transform = expanded ? 'rotate(90deg)' : 'rotate(0deg)'
     itemDom.toggle.setAttribute('aria-expanded', expanded ? 'true' : 'false')
-    itemDom.root.dataset['expanded'] = expanded ? 'true' : 'false'
   }
+
+  return false
 }
