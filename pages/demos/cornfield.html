@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Pretext Demo — 文字田野</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    overflow: hidden;
+    background: #1a2e12;
+    color: #c8ddb8;
+    font-family: "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", "Helvetica Neue", sans-serif;
+    -webkit-font-smoothing: antialiased;
+    cursor: default;
+  }
+
+  canvas {
+    display: block;
+    width: 100vw;
+    height: 100vh;
+  }
+
+  .overlay {
+    position: fixed;
+    pointer-events: none;
+    z-index: 1;
+  }
+
+  .header {
+    top: 24px;
+    left: 32px;
+  }
+
+  .eyebrow {
+    font: 11px/1.2 "SF Mono", ui-monospace, monospace;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: #7db356;
+    margin-bottom: 4px;
+  }
+
+  h1 {
+    font: 700 30px/1.15 "PingFang SC", "Microsoft YaHei", Georgia, serif;
+    color: #e0f0d0;
+    text-shadow: 0 2px 8px rgba(0,0,0,0.4);
+  }
+
+  .subtitle {
+    margin-top: 4px;
+    font: 13px/1.5 "PingFang SC", "Microsoft YaHei", sans-serif;
+    color: rgba(200, 230, 180, 0.5);
+  }
+
+  .hint {
+    position: fixed;
+    bottom: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    font: 11px/1.7 "SF Mono", ui-monospace, monospace;
+    color: rgba(200, 230, 180, 0.3);
+    text-align: center;
+    white-space: nowrap;
+    pointer-events: none;
+    z-index: 1;
+  }
+
+  .stats {
+    bottom: 20px;
+    left: 32px;
+    font: 11px/1.4 "SF Mono", ui-monospace, monospace;
+    color: rgba(200, 230, 180, 0.25);
+  }
+
+  @media (max-width: 640px) {
+    .header { top: 16px; left: 16px; }
+    .stats { bottom: 12px; left: 16px; }
+    .hint { bottom: 12px; font-size: 10px; }
+    h1 { font-size: 24px; }
+  }
+</style>
+</head>
+<body>
+  <canvas id="c"></canvas>
+
+  <div class="overlay header">
+    <p class="eyebrow">Pretext</p>
+    <h1>文字田野</h1>
+    <p class="subtitle">在文字的田野中漫步，拨开每一行文字前行</p>
+  </div>
+
+  <div class="hint">WASD / 方向键移动 · 鼠标点击设定目标</div>
+  <div class="overlay stats" id="stats"></div>
+
+  <script type="module" src="./cornfield.ts"></script>
+</body>
+</html>

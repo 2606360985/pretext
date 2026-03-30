@@ -1,0 +1,13 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(curl -s -o /dev/null -w \"%{http_code}\" http://localhost:61642/demos/liquid-text)",
+      "Bash(curl -s -o /dev/null -w \"%{http_code}\" http://localhost:61642/pages/demos/liquid-text.html)",
+      "Bash(bun --port 3005 pages/*.html pages/demos/*.html pages/demos/*/index.html)",
+      "Bash(curl -s http://localhost:3005/)",
+      "Bash(curl -s http://localhost:3005/accuracy)",
+      "Bash(curl -s http://localhost:3005/demos/cornfield)",
+      "Bash(curl -s http://localhost:3005/demos)"
+    ]
+  }
+}

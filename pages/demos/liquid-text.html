@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Pretext Demo — 笔墨之间</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    overflow: hidden;
+    background: #f4ece0;
+    color: #2c1e10;
+    font-family: "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", "Helvetica Neue", sans-serif;
+    -webkit-font-smoothing: antialiased;
+    cursor: crosshair;
+  }
+
+  canvas {
+    display: block;
+    width: 100vw;
+    height: 100vh;
+  }
+
+  .overlay {
+    position: fixed;
+    pointer-events: none;
+    z-index: 1;
+  }
+
+  .header {
+    top: 28px;
+    left: 40px;
+  }
+
+  .eyebrow {
+    font: 11px/1.2 "SF Mono", ui-monospace, monospace;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: #8b5e3c;
+    margin-bottom: 4px;
+  }
+
+  h1 {
+    font: 700 34px/1.15 "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", Georgia, serif;
+    color: #1a0e05;
+  }
+
+  .subtitle {
+    margin-top: 4px;
+    font: 14px/1.5 "PingFang SC", "Microsoft YaHei", sans-serif;
+    color: #8b7560;
+  }
+
+  .hint {
+    position: fixed;
+    top: 28px;
+    right: 40px;
+    font: 11px/1.7 "SF Mono", ui-monospace, monospace;
+    color: rgba(44, 30, 16, 0.32);
+    text-align: right;
+  }
+
+  .stats {
+    bottom: 20px;
+    left: 40px;
+    font: 11px/1.4 "SF Mono", ui-monospace, monospace;
+    color: rgba(44, 30, 16, 0.28);
+  }
+
+  .clear-hint {
+    bottom: 20px;
+    right: 40px;
+    font: 11px/1.4 "SF Mono", ui-monospace, monospace;
+    color: rgba(44, 30, 16, 0.22);
+  }
+
+  @media (max-width: 640px) {
+    .header { top: 16px; left: 20px; }
+    .hint { top: 16px; right: 20px; font-size: 10px; }
+    .stats { bottom: 12px; left: 20px; }
+    .clear-hint { bottom: 12px; right: 20px; }
+    h1 { font-size: 26px; }
+  }
+</style>
+</head>
+<body>
+  <canvas id="c"></canvas>
+
+  <div class="overlay header">
+    <p class="eyebrow">Pretext</p>
+    <h1>笔墨之间</h1>
+    <p class="subtitle">按住鼠标书写，看文字如水流般避让</p>
+  </div>
+
+  <div class="overlay hint">
+    按住拖动 · 绘制笔触<br>
+    按 C 清除画布
+  </div>
+
+  <div class="overlay stats" id="stats"></div>
+  <div class="overlay clear-hint">press C to clear</div>
+
+  <script type="module" src="./liquid-text.ts"></script>
+</body>
+</html>
