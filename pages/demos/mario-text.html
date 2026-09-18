@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Pretext Demo — 文字田野闯关</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    overflow: hidden;
+    background: #0a1020;
+    font-family: "Courier New", "SF Mono", ui-monospace, monospace;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  canvas {
+    display: block;
+    width: 100vw;
+    height: 100vh;
+  }
+
+  .overlay {
+    position: fixed;
+    pointer-events: none;
+    z-index: 1;
+  }
+
+  .hud {
+    top: 16px;
+    left: 0;
+    right: 0;
+    display: flex;
+    justify-content: space-between;
+    padding: 0 24px;
+    font: bold 16px/1 "Courier New", monospace;
+    color: #fff;
+    text-shadow: 2px 2px 0 #0004, -1px -1px 0 #0004;
+  }
+
+  .hud-left, .hud-right {
+    display: flex;
+    gap: 24px;
+  }
+
+  .hint {
+    position: fixed;
+    bottom: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    font: 11px/1.7 "SF Mono", ui-monospace, monospace;
+    color: rgba(255,255,255,0.4);
+    text-align: center;
+    white-space: nowrap;
+    pointer-events: none;
+    z-index: 1;
+  }
+
+  .overlay-title {
+    top: 50px;
+    left: 50%;
+    transform: translateX(-50%);
+    text-align: center;
+    pointer-events: none;
+    opacity: 0;
+    transition: opacity 0.3s;
+  }
+
+  .overlay-title.show {
+    opacity: 1;
+  }
+
+  .overlay-title h2 {
+    font: bold 36px/1 "Courier New", monospace;
+    color: #fff;
+    text-shadow: 3px 3px 0 #000, -1px -1px 0 #0008;
+  }
+
+  .overlay-title p {
+    margin-top: 8px;
+    font: 14px/1 "Courier New", monospace;
+    color: #ffd700;
+    text-shadow: 2px 2px 0 #000;
+  }
+
+  @media (max-width: 640px) {
+    .hud { font-size: 13px; padding: 0 12px; }
+    .hud-left, .hud-right { gap: 12px; }
+    .hint { font-size: 10px; }
+  }
+</style>
+</head>
+<body>
+  <canvas id="c"></canvas>
+
+  <div class="overlay hud" id="hud">
+    <div class="hud-left">
+      <span id="score">SCORE: 0</span>
+      <span id="coins">COINS: 0</span>
+    </div>
+    <div class="hud-right">
+      <span id="lives">LIVES: 3</span>
+    </div>
+  </div>
+
+  <div class="overlay overlay-title" id="overlay">
+    <h2 id="overlay-title-text">文字田野闯关</h2>
+    <p id="overlay-sub-text">WASD移动 · 点击目标 · SPACE开始</p>
+  </div>
+
+  <div class="hint">WASD / 方向键移动 · 鼠标点击设定目标 · 收集金色文字★☆</div>
+
+  <div class="overlay" id="stats" style="bottom:20px;right:24px;font:11px/1.4 'SF Mono',monospace;color:rgba(255,255,255,0.3);pointer-events:none;z-index:1"></div>
+
+  <script type="module" src="./mario-text.ts"></script>
+</body>
+</html>
